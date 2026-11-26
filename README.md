@@ -10,14 +10,18 @@ Aplicación web desarrollada con **Vite** y **JavaScript (Vanilla)** para gestio
    Arrancar el servidor de desarrollo
    npm run dev
 
-Librerías externas utilizadas (NPM)
-Para cumplir con la gestión de dependencias (sin utilizar axios ni react), se han integrado 3 librerías con funcionalidad real en la aplicación:
+## Librerías externas utilizadas (NPM)
 
-sweetalert2: Se utiliza para mostrar ventanas modales interactivas y confirmaciones antes de realizar acciones destructivas (eliminar un proyecto o una tarea), así como cuadros de diálogo con inputs para editar el nombre de un proyecto o visualizar su información.
+Para cumplir con la gestión de dependencias (sin utilizar `axios` ni `react`), se han integrado 3 librerías con funcionalidad real en la aplicación:
 
-toastify-js: Proporciona notificaciones visuales flotantes (tipo toast) en la esquina de la pantalla para dar feedback inmediato al usuario cada vez que se crea, actualiza, archiva o elimina un registro.
+1. **`sweetalert2`**: Se utiliza para mostrar ventanas modales interactivas y confirmaciones antes de realizar acciones destructivas (eliminar un proyecto o una tarea), así como cuadros de diálogo con inputs para editar el nombre de un proyecto o visualizar su información.
+   - Comando utilizado para instalar la librería: `npm install sweetalert2`
 
-dayjs: Se encarga de parsear las fechas en formato ISO procedentes de la API y formatearlas a un formato legible (DD/MM/YYYY) en las tarjetas de cada tarea.
+2. **`toastify-js`**: Proporciona notificaciones visuales flotantes (tipo *toast*) en la esquina de la pantalla para dar feedback inmediato al usuario cada vez que se crea, actualiza, archiva o elimina un registro.
+   - Comando utilizado para instalar la librería: `npm install toastify-js`
+
+3. **`dayjs`**: Se encarga de parsear las fechas en formato ISO procedentes de la API y formatearlas a un formato legible (`DD/MM/YYYY`) en las tarjetas de cada tarea.
+   - Comando utilizado para instalar la librería: `npm install dayjs`
 
 Estructura del proyecto
 index.html: Estructura principal de la interfaz con PicoCSS.
