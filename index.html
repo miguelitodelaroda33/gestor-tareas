@@ -1,13 +1,62 @@
-<!doctype html>
-<html lang="en">
+<!DOCTYPE html>
+<html lang="es">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>gestor-tareas</title>
+    <title>Gestor de Tareas y Proyectos</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css" />
+    <link rel="stylesheet" href="/src/style.css" />
   </head>
   <body>
-    <div id="app"></div>
+    <main class="container">
+      <h1>Gestor de Tareas y Proyectos</h1>
+
+      <div class="grid">
+        <!-- SECCIÓN PROYECTOS -->
+        <section>
+          <h2>Proyectos</h2>
+          <form id="form-proyecto">
+            <input type="text" id="input-proyecto" placeholder="Nombre del proyecto..." required />
+            <button type="submit">Crear Proyecto</button>
+          </form>
+          <div id="lista-proyectos"></div>
+        </section>
+
+        <!-- SECCIÓN TAREAS -->
+        <section>
+          <h2>Tareas</h2>
+          <form id="form-tarea">
+            <input type="hidden" id="tarea-id" />
+            <input type="text" id="input-titulo" placeholder="Título de la tarea..." required />
+            <div class="grid">
+              <select id="select-prioridad">
+                <option value="baja">Prioridad: Baja</option>
+                <option value="media" selected>Prioridad: Media</option>
+                <option value="alta">Prioridad: Alta</option>
+              </select>
+              <input type="date" id="input-fecha" required />
+            </div>
+            <button type="submit" id="btn-guardar-tarea">Guardar Tarea</button>
+            <button type="button" id="btn-cancelar-edicion" class="secondary hidden">Cancelar Edición</button>
+          </form>
+
+          <!-- Filtros y Buscador -->
+          <div class="filtros">
+            <input type="search" id="input-buscar" placeholder="Buscar tarea por título..." />
+            <div role="group">
+              <button type="button" class="outline" id="btn-todas">Todas</button>
+              <button type="button" class="outline" id="btn-pendientes">Pendientes</button>
+              <button type="button" class="outline" id="btn-completadas">Completadas</button>
+              <button type="button" class="outline" id="btn-urgentes">Urgentes</button>
+            </div>
+          </div>
+
+          <div id="lista-tareas"></div>
+        </section>
+      </div>
+    </main>
+
     <script type="module" src="/src/main.js"></script>
   </body>
 </html>
