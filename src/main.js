@@ -25,9 +25,56 @@ const listaTareas = document.getElementById('lista-tareas');
 const formProyecto = document.getElementById('form-proyecto');
 const formTarea = document.getElementById('form-tarea');
 
-// Cargar todo al abrir la pagina
+// Botones de filtro
+const btnTodas = document.getElementById('btn-todas');
+const btnPendientes = document.getElementById('btn-pendientes');
+const btnCompletadas = document.getElementById('btn-completadas');
+const btnUrgentes = document.getElementById('btn-urgentes');
+
+// Guardamos en que pestaña estamos ('todas', 'pendientes', 'completadas' o 'urgentes')
+let vistaActual = 'todas';
+
+function marcarBotonActivo(botonSeleccionado) {
+  btnTodas.classList.add('outline');
+  btnTodas.classList.remove('secondary');
+
+  btnPendientes.classList.add('outline');
+  btnPendientes.classList.remove('secondary');
+
+  btnCompletadas.classList.add('outline');
+  btnCompletadas.classList.remove('secondary');
+
+  btnUrgentes.classList.add('outline');
+  btnUrgentes.classList.remove('secondary');
+
+  botonSeleccionado.classList.remove('outline');
+  botonSeleccionado.classList.add('secondary');
+}
+
+// Recarga la lista respetando la pestaña que este seleccionada
+async function recargarVistaActual() {
+  if (vistaActual === 'todas') {
+    marcarBotonActivo(btnTodas);
+    const lista = await obtenerTareas();
+    pintarTareas(lista);
+  } else if (vistaActual === 'pendientes') {
+    marcarBotonActivo(btnPendientes);
+    const lista = await obtenerTareasPendientes();
+    pintarTareas(lista);
+  } else if (vistaActual === 'completadas') {
+    marcarBotonActivo(btnCompletadas);
+    const lista = await obtenerTareasCompletadas();
+    pintarTareas(lista);
+  } else if (vistaActual === 'urgentes') {
+    marcarBotonActivo(btnUrgentes);
+    const lista = await obtenerTareasUrgentes();
+    pintarTareas(lista);
+  }
+}
+
+// Al abrir la pagina empezamos en "Todas"
 cargarProyectos();
-cargarTareas();
+recargarVistaActual();
 
 // ==========================================
 // PROYECTOS
@@ -124,12 +171,11 @@ formProyecto.addEventListener('submit', async (e) => {
 // TAREAS
 // ==========================================
 
-async function cargarTareas(listaCustom = null) {
-  const tareas = listaCustom ? listaCustom : await obtenerTareas();
+function pintarTareas(tareas) {
   listaTareas.innerHTML = '';
 
-  if (!Array.isArray(tareas)) {
-    listaTareas.innerHTML = '<p>No se encontraron tareas.</p>';
+  if (!Array.isArray(tareas) || tareas.length === 0) {
+    listaTareas.innerHTML = '<p>No hay tareas en esta vista.</p>';
     return;
   }
 
@@ -155,15 +201,15 @@ async function cargarTareas(listaCustom = null) {
     // Boton PATCH completar
     div.querySelector('.btn-hecha').addEventListener('click', async () => {
       await cambiarEstadoTarea(tarea.id, !tarea.completada);
-      mostrarAviso('Estado cambiado');
-      cargarTareas();
+      mostrarAviso(tarea.completada ? 'Tarea reabierta' : 'Tarea completada');
+      recargarVistaActual();
     });
 
     // Boton PATCH urgente
     div.querySelector('.btn-urgente').addEventListener('click', async () => {
       await marcarTareaUrgente(tarea.id);
-      mostrarAviso('Tarea urgente');
-      cargarTareas();
+      mostrarAviso('Tarea marcada como urgente');
+      recargarVistaActual();
     });
 
     // Boton GET por ID para editar
@@ -187,7 +233,7 @@ async function cargarTareas(listaCustom = null) {
       if (alerta.isConfirmed) {
         await eliminarTarea(tarea.id);
         mostrarAviso('Tarea eliminada');
-        cargarTareas();
+        recargarVistaActual();
       }
     });
 
@@ -218,7 +264,7 @@ formTarea.addEventListener('submit', async (e) => {
   formTarea.reset();
   document.getElementById('tarea-id').value = '';
   document.getElementById('btn-cancelar-edicion').classList.add('hidden');
-  cargarTareas();
+  recargarVistaActual();
 });
 
 // Boton cancelar edicion
@@ -232,32 +278,32 @@ document.getElementById('btn-cancelar-edicion').addEventListener('click', () => 
 // FILTROS Y BUSCADOR
 // ==========================================
 
-document.getElementById('btn-todas').addEventListener('click', async () => {
-  const lista = await obtenerTareas();
-  cargarTareas(lista);
+btnTodas.addEventListener('click', () => {
+  vistaActual = 'todas';
+  recargarVistaActual();
 });
 
-document.getElementById('btn-pendientes').addEventListener('click', async () => {
-  const lista = await obtenerTareasPendientes();
-  cargarTareas(lista);
+btnPendientes.addEventListener('click', () => {
+  vistaActual = 'pendientes';
+  recargarVistaActual();
 });
 
-document.getElementById('btn-completadas').addEventListener('click', async () => {
-  const lista = await obtenerTareasCompletadas();
-  cargarTareas(lista);
+btnCompletadas.addEventListener('click', () => {
+  vistaActual = 'completadas';
+  recargarVistaActual();
 });
 
-document.getElementById('btn-urgentes').addEventListener('click', async () => {
-  const lista = await obtenerTareasUrgentes();
-  cargarTareas(lista);
+btnUrgentes.addEventListener('click', () => {
+  vistaActual = 'urgentes';
+  recargarVistaActual();
 });
 
 document.getElementById('input-buscar').addEventListener('input', async (e) => {
   const texto = e.target.value;
   if (texto === '') {
-    cargarTareas();
+    recargarVistaActual();
   } else {
     const lista = await buscarTareas(texto);
-    cargarTareas(lista);
+    pintarTareas(lista);
   }
 });

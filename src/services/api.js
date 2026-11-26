@@ -19,25 +19,41 @@ export async function obtenerTareaPorId(id) {
 // 3. GET tareas completadas
 export async function obtenerTareasCompletadas() {
   const res = await fetch(`${URL_API}/tareas?completada=true`);
-  return await res.json();
+  if (!res.ok) return [];
+  const datos = await res.json();
+  return Array.isArray(datos) ? datos : [];
 }
 
 // 4. GET tareas pendientes
 export async function obtenerTareasPendientes() {
   const res = await fetch(`${URL_API}/tareas?completada=false`);
-  return await res.json();
+  if (!res.ok) return [];
+  const datos = await res.json();
+  return Array.isArray(datos) ? datos : [];
 }
 
-// 5. GET tareas urgentes
+// 5. GET tareas urgentes (prioridad alta y que no esten hechas)
 export async function obtenerTareasUrgentes() {
   const res = await fetch(`${URL_API}/tareas?prioridad=alta`);
-  return await res.json();
+  if (!res.ok) return [];
+  const datos = await res.json();
+  if (!Array.isArray(datos)) return [];
+
+  const soloPendientesUrgentes = [];
+  for (let i = 0; i < datos.length; i++) {
+    if (!datos[i].completada) {
+      soloPendientesUrgentes.push(datos[i]);
+    }
+  }
+  return soloPendientesUrgentes;
 }
 
 // 6. GET buscar tareas por titulo
 export async function buscarTareas(texto) {
   const res = await fetch(`${URL_API}/tareas?titulo=${texto}`);
-  return await res.json();
+  if (!res.ok) return [];
+  const datos = await res.json();
+  return Array.isArray(datos) ? datos : [];
 }
 
 // 7. DELETE borrar tarea
@@ -94,8 +110,18 @@ export async function actualizarTareaCompleta(id, tareaEditada) {
 
 // 3. PATCH marcar tarea hecha o pendiente
 export async function cambiarEstadoTarea(id, estado) {
+  try {
+    await fetch(`${URL_API}/tareas/${id}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ completada: estado }),
+    });
+  } catch (e) {
+    // Si MockAPI bloquea PATCH por CORS, continuamos con PUT
+  }
+
   const res = await fetch(`${URL_API}/tareas/${id}`, {
-    method: 'PATCH',
+    method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ completada: estado }),
   });
@@ -104,8 +130,18 @@ export async function cambiarEstadoTarea(id, estado) {
 
 // 4. PATCH cambiar prioridad a alta
 export async function marcarTareaUrgente(id) {
+  try {
+    await fetch(`${URL_API}/tareas/${id}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ prioridad: 'alta' }),
+    });
+  } catch (e) {
+    // Si MockAPI bloquea PATCH por CORS, continuamos con PUT
+  }
+
   const res = await fetch(`${URL_API}/tareas/${id}`, {
-    method: 'PATCH',
+    method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ prioridad: 'alta' }),
   });
@@ -134,8 +170,18 @@ export async function actualizarProyectoCompleto(id, proyectoEditado) {
 
 // 7. PATCH activar o archivar proyecto
 export async function cambiarEstadoProyecto(id, activo) {
+  try {
+    await fetch(`${URL_API}/proyectos/${id}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ activo: activo }),
+    });
+  } catch (e) {
+    // Si MockAPI bloquea PATCH por CORS, continuamos con PUT
+  }
+
   const res = await fetch(`${URL_API}/proyectos/${id}`, {
-    method: 'PATCH',
+    method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ activo: activo }),
   });
