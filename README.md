@@ -23,7 +23,7 @@ Para cumplir con la gestión de dependencias (sin utilizar `axios` ni `react`), 
 3. **`dayjs`**: Se encarga de parsear las fechas en formato ISO procedentes de la API y formatearlas a un formato legible (`DD/MM/YYYY`) en las tarjetas de cada tarea.
    - Comando utilizado para instalar la librería: `npm install dayjs`
 
-Estructura del proyecto
+## Estructura del proyecto
 index.html: Estructura principal de la interfaz con PicoCSS.
 
 src/style.css: Estilos personalizados para tarjetas, estados completados y botones de acción.
